@@ -1,0 +1,18 @@
+# 指定 Actions 的名稱，會顯示在 Actions 頁面上
+name: deploy actions
+
+# 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
+on:
+  pull_request:
+    types:
+      - closed
+    branches: main
+
+# 指定工作流程(jobs)
+# 每個 actions 至少要有一個 job
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This job was tirggered by a ${{ github.event_name }} event"
