@@ -1,0 +1,24 @@
+# 指定 Actions 的名稱，會顯示在 Actions 頁面上
+name: Manual Actions
+
+# 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
+on:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+        type: choice
+        options:
+          - info
+          - warning
+          - debug
+
+# 指定工作流程(jobs)
+# 每個 actions 至少要有一個 job
+jobs:
+  first-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is ${{ inputs.logLevel }} level"
