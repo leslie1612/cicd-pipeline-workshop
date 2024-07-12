@@ -1,0 +1,23 @@
+# 指定 Actions 的名稱，會顯示在 Actions 頁面上
+name: test actions
+
+# 指定觸發的事件(trigger event)，這裡是 push 到 main 分支時觸發
+on:
+  pull_request:
+    branches: main
+
+# 指定工作流程(jobs)
+# 每個 actions 至少要有一個 job
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout code base
+      - uses: actions/checkout@v4
+        # get node.js
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18.x'
+      - run: npm install
+      - run: ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome
