@@ -24,27 +24,35 @@ jobs:
       - name: run test
         run: ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome
 
-      - name: upload report
-        if: always()
-        uses: actions/upload-artifact@v2
+  upload_report:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage
 
-      - name: upload test result
-        if: always()
-        uses: actions/upload-artifact@v2
+  upload_test_result:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: mochawesome-report
 
-      - name: Discord notification
-        if: failure()
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: |
-            The project ${{ github.repository }} has failed. Please check the details.
-            [Coverage Report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)
-            [Test Results](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)
+  # Discord_notification:
+  #   runs-on: ubuntu-latest
+  #   if: failure()
+  #   env:
+  #     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  #   steps:
+  #     uses: Ilshidur/action-discord@master
+  #     with:
+  #       args: |
+  #         The project ${{ github.repository }} has failed. Please check the details.
