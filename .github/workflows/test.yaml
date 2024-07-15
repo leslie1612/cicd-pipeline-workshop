@@ -44,4 +44,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'The project ${{ github.repository }} has failed. Please check the details.'
+          args: |
+            The project ${{ github.repository }} has failed. Please check the details.
+            [Coverage Report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)
+            [Test Results](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)
