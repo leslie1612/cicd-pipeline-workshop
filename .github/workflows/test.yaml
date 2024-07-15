@@ -20,16 +20,39 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm install
-      - run: ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome
-      - name: upload report
-        if: always()
-        uses: actions/upload-artifact@v2
+
+      - name: run test
+        run: ./node_modules/.bin/nyc --reporter=html ./node_modules/.bin/mocha --reporter mochawesome
+
+  upload_report:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
         with:
           name: coverage-report
           path: coverage
-      - name: upload test result
-        if: always()
-        uses: actions/upload-artifact@v2
+
+  upload_test_result:
+    needs: test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
         with:
           name: test-results
           path: mochawesome-report
+
+  # Discord_notification:
+  #   runs-on: ubuntu-latest
+  #   if: failure()
+  #   env:
+  #     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  #   steps:
+  #     uses: Ilshidur/action-discord@master
+  #     with:
+  #       args: |
+  #         The project ${{ github.repository }} has failed. Please check the details.
