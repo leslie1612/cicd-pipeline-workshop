@@ -26,6 +26,7 @@ jobs:
           script: |
             cd /home/ubuntu/cicd-pipeline-workshop
             git pull
+            pm2 start src/server.js
             pm2 restart src/server.js
           # remove <none> TAG images
           #docker rmi $(docker images --filter "dang
